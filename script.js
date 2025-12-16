@@ -4,7 +4,23 @@ fileInput.addEventListener('change', function(e) {
     // Quand le fichier change dans l'input
     const file = e.target.files[0] // => fichier selectionner
     lireFichier(file);
+    
 })
+
+function exploiterDonnee(data){
+    var output = document.getElementById('result');
+    nombreLigne = data.length
+    for(i=0; i<nombreLigne; i++){
+        var tr = document.createElement('tr');
+        var nbCol = data[i].length;
+        for(j=0; j<nbCol; j++){
+            var td = document.createElement('td');
+            td.innerHTML = data[i][j]
+            tr.appendChild(td)
+        }
+        output.appendChild(tr)
+    }
+}
 
 
 function lireFichier(file){
@@ -23,10 +39,7 @@ function lireFichier(file){
         result = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
         
         // data preview
-        var output = document.getElementById('result');
-        output.innerHTML = JSON.stringify(result, null, 2);
+        exploiterDonnee(result);
   };
   reader.readAsArrayBuffer(file);
-
-    reader.readAsArrayBuffer(file);
 }
