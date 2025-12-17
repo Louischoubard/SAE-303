@@ -23,7 +23,7 @@ function exploiterDonnee(data){
     var output = document.getElementById('result');
     output.innerHTML ="";
     nombreLigne = data.length
-    for(i=0; i<nombreLigne; i++){
+    for(i=1; i<nombreLigne; i++){
         var tr = document.createElement('tr');
 
         // Ne pas affiche si age < minAge et age > maxAge
@@ -31,9 +31,17 @@ function exploiterDonnee(data){
             continue;
         }
 
+        if(i == 1){
+            var entete = data[1];
+            console.log(entete);
+        }
+
         var nbCol = data[i].length;
         for(j=0; j<nbCol; j++){
             var td = document.createElement('td');
+            if(data[i][j] == "undefined" || data[i][j] == null){
+                continue;
+            }
             td.innerHTML = data[i][j]
             tr.appendChild(td)
         }
