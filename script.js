@@ -23,30 +23,35 @@ function exploiterDonnee(data){
     var output = document.getElementById('result');
     output.innerHTML ="";
     nombreLigne = data.length
-    for(i=1; i<nombreLigne; i++){
-        var tr = document.createElement('tr');
 
-        // Ne pas affiche si age < minAge et age > maxAge
-        if(parseInt(data[i][colAge]) < minAge || parseInt(data[i][colAge]) > maxAge){
-            continue;
-        }
+    var tabTSA = data.filter((x) => x[3]=="TSA");
+    console.log(tabTSA[10]);
+    
+    // for(i=1; i<nombreLigne; i++){
+    //     var tr = document.createElement('tr');
 
-        if(i == 1){
-            var entete = data[1];
-            console.log(entete);
-        }
+    //     // Ne pas affiche si age < minAge et age > maxAge
+    //     if(parseInt(data[i][colAge]) < minAge || parseInt(data[i][colAge]) > maxAge){
+    //         continue;
+    //     }
 
-        var nbCol = data[i].length;
-        for(j=0; j<nbCol; j++){
-            var td = document.createElement('td');
-            if(data[i][j] == "undefined" || data[i][j] == null){
-                continue;
-            }
-            td.innerHTML = data[i][j]
-            tr.appendChild(td)
-        }
-        output.appendChild(tr)
-    }
+    //     if(i == 1){
+    //         var entete = data[1];
+    //         var entete = entete.filter((x)=>x!="")
+    //         console.log(entete);
+    //     }
+
+    //     var nbCol = data[i].length;
+    //     for(j=0; j<nbCol; j++){
+    //         var td = document.createElement('td');
+    //         // if(data[i][j] == "undefined" || data[i][j] == null){
+    //         //     continue;
+    //         // }
+    //         td.innerHTML = data[i][j]
+    //         tr.appendChild(td)
+    //     }
+    //     output.appendChild(tr)
+    // }
 }
 
 
