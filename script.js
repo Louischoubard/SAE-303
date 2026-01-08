@@ -50,7 +50,10 @@ function changeParam(){
     return valueParam;
 }
 
-function getRecherche(valueParam, valueZone, valueVisage){
+function getRecherche(){
+    var valueVisage = changeVisage();
+    var valueZone = changeZone();
+    var valueParam = changeParam();
     if(valueParam == "TTT"){
         return valueParam + "_Visage" + valueVisage
     }
@@ -94,21 +97,30 @@ function createChart(titre, cle, valeur, nameChart, canva){
     });
 }
 
+function getDonneeChart(tableau){
+    var valeur = [];
+    var age = [];
+    tableau.filter(e => e[getRecherche()] != 1000)
+    .sort((a, b) => a["Age (ans)"] - b["Age (ans)"])
+    .forEach(e => {
+        age.push(Math.round(e["Age (ans)"] * 100) / 100);
+        valeur.push(e[getRecherche()]);
+    });
+    return[age, valeur];
+}
+
 function exploiterDonnee(data){
     var valueAge = changeAge();
-    var valueVisage = changeVisage();
-    var valueZone = changeZone();
-    var valueParam = changeParam();
 
-    var recherche = getRecherche(valueParam, valueZone, valueVisage);
-    console.log(recherche);
+    var recherche = getRecherche();
+    // console.log(recherche);
 
     var dataUpdate = data.filter((x, index) => index > 0 && x[1]>=valueAge[0] && x[1]<=valueAge[1]);
 
     var entetes = data[1];
 
     var indexRecherche = entetes.indexOf(recherche);
-    console.log(indexRecherche, recherche)
+    // console.log(indexRecherche, recherche)
 
     var resultat = dataUpdate.map(ligne => ({
         "Sujet": ligne[0],
@@ -120,27 +132,11 @@ function exploiterDonnee(data){
     var tabTSA = resultat.filter((x) => x["Case"]=="TSA");
     var tabDT = resultat.filter((x) => x["Case"]=="DT");
 
-    var valeurTSA = [];
-    var ageTSA = [];
-    tabTSA.filter(e => e[recherche] != 1000)
-    .sort((a, b) => a["Age (ans)"] - b["Age (ans)"])
-    .forEach(e => {
-        ageTSA.push(Math.round(e["Age (ans)"] * 100) / 100);
-        valeurTSA.push(e[recherche]);
-    });
+    var donneTSA = getDonneeChart(tabTSA);
+    var donneDT = getDonneeChart(tabDT);
 
-    chartTSA = createChart('TSA', ageTSA, valeurTSA, chartTSA, canvaChartTSA);
-
-    var valeurDT = [];
-    var ageDT = [];
-    tabDT.filter(e => e[recherche] != 1000)
-    .sort((a, b) => a["Age (ans)"] - b["Age (ans)"])
-    .forEach(e => {
-        ageDT.push(Math.round(e["Age (ans)"] * 100) / 100);
-        valeurDT.push(e[recherche]);
-    });
-
-    chartDT = createChart('DT', ageDT, valeurDT, chartDT, canvaChartDT);
+    chartTSA = createChart('TSA', donneTSA[0], donneTSA[1], chartTSA, canvaChartTSA);
+    chartDT = createChart('DT', donneDT[0], donneDT[1], chartDT, canvaChartDT);
 
     
     // for(i=1; i<nombreLigne; i++){
