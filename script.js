@@ -3,6 +3,7 @@ const canvaChartTSA = document.getElementById('canvaChartTSA');
 const canvaChartDT = document.getElementById('canvaChartDT');
 var chartTSA = null;
 var chartDT = null;
+var chartBoxplot = null;
 
 const ageSelect = document.getElementById('selectAge');
 const selectVisage = document.getElementById('selectVisage');
@@ -29,31 +30,31 @@ selectParam.addEventListener('change', () => {
     exploiterDonnee(data);
 })
 
-function changeAge(){
+function getAge(){
     var valueAge = ageSelect.value;
     valueAge = valueAge.split("-");
-    return valueAge;
+    return [valueAge, ageSelect.options[ageSelect.selectedIndex].text];
 }
 
-function changeVisage(){
+function getVisage(){
     var valueVisage = selectVisage.value;
-    return valueVisage;
+    return [valueVisage, selectVisage.options[selectVisage.selectedIndex].text];
 }
 
-function changeZone(){
+function getZone(){
     var valueZone = selectZone.value;
-    return valueZone;
+    return [valueZone, selectZone.options[selectZone.selectedIndex].text];
 }
 
-function changeParam(){
+function getParam(){
     var valueParam = selectParam.value;
-    return valueParam;
+    return [valueParam, selectParam.options[selectParam.selectedIndex].text];
 }
 
 function getRecherche(){
-    var valueVisage = changeVisage();
-    var valueZone = changeZone();
-    var valueParam = changeParam();
+    var valueVisage = getVisage()[0];
+    var valueZone = getZone()[0];
+    var valueParam = getParam()[0];
     if(valueParam == "TTT"){
         return valueParam + "_Visage" + valueVisage
     }
@@ -64,6 +65,22 @@ function getRecherche(){
         return valueParam + "_" + valueZone + "_Visage" + valueVisage;
     }
     return valueParam.toUpperCase() + "_" + valueZone + "_Visage" + valueVisage;
+}
+
+function getTitle(){
+    var valueVisage = getVisage()[0];
+    var valueZone = getZone()[0];
+    var valueParam = getParam()[0];
+    if(valueParam == "TTT"){
+        return getParam()[1] + " du " + getVisage()[1] + " pour les " + getAge()[1] + " ans";
+    }
+    // if(valueZone == "E"){
+    //     return valueParam + valueZone + "_Visage" + valueVisage
+    // }
+    // if(valueParam == "Lat"){
+    //     return valueParam + "_" + valueZone + "_Visage" + valueVisage;
+    // }
+    return getParam()[1] + " sur la zone " + getZone()[1] + " du " + getVisage()[1] + " pour les " + getAge()[1] + " ans";
 }
 
 function createChart(titre, cle, valeur, nameChart, canva){
@@ -78,7 +95,8 @@ function createChart(titre, cle, valeur, nameChart, canva){
                 // label: valueParam + ' (s) sur ' + valueZone + ' pour l\'age',
                 label: "Test",
                 data: valeur,
-                borderWidth: 1
+                borderWidth: 1,
+                tension: 0.1
             }]
         },
         options: {
@@ -90,11 +108,49 @@ function createChart(titre, cle, valeur, nameChart, canva){
             plugins: {
                 title: {
                     display: true,
-                    text: titre
+                    text: getTitle() + " - " + titre
                 }
             }
         }
     });
+}
+
+function createBoxPlot(tabTSA, tabDT){
+    if(chartBoxplot !== null){
+        chartBoxplot.destroy();
+    }
+    const ctx = document.getElementById('boxplotChart');
+
+    chartBoxplot = new Chart(ctx, {
+        type: 'boxplot',
+        data: {
+            labels: [''],
+            datasets: [{
+                label: 'DT',
+                data: [
+                    tabDT.filter(e => e[getRecherche()] != 1000).map(e => e[getRecherche()]),
+                ],
+                backgroundColor: 'orange'
+            },
+            {
+                label: 'TSA',
+                data: [
+                    tabTSA.filter(e => e[getRecherche()] != 1000).map(e => e[getRecherche()])
+                ],
+                backgroundColor: 'blue'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: "Boxplot du " + getTitle()
+                }
+            }
+        }
+    });
+
 }
 
 function getDonneeChart(tableau){
@@ -110,7 +166,7 @@ function getDonneeChart(tableau){
 }
 
 function exploiterDonnee(data){
-    var valueAge = changeAge();
+    var valueAge = getAge()[0];
 
     var recherche = getRecherche();
     // console.log(recherche);
@@ -138,32 +194,8 @@ function exploiterDonnee(data){
     chartTSA = createChart('TSA', donneTSA[0], donneTSA[1], chartTSA, canvaChartTSA);
     chartDT = createChart('DT', donneDT[0], donneDT[1], chartDT, canvaChartDT);
 
-    
-    // for(i=1; i<nombreLigne; i++){
-    //     var tr = document.createElement('tr');
+    boxPlot = createBoxPlot(tabTSA, tabDT);
 
-    //     // Ne pas affiche si age < minAge et age > maxAge
-    //     if(parseInt(data[i][colAge]) < minAge || parseInt(data[i][colAge]) > maxAge){
-    //         continue;
-    //     }
-
-    //     if(i == 1){
-    //         var entete = data[1];
-    //         var entete = entete.filter((x)=>x!="")
-    //         console.log(entete);
-    //     }
-
-    //     var nbCol = data[i].length;
-    //     for(j=0; j<nbCol; j++){
-    //         var td = document.createElement('td');
-    //         // if(data[i][j] == "undefined" || data[i][j] == null){
-    //         //     continue;
-    //         // }
-    //         td.innerHTML = data[i][j]
-    //         tr.appendChild(td)
-    //     }
-    //     output.appendChild(tr)
-    // }
 }
 
 
