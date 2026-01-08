@@ -1,0 +1,66 @@
+<html>
+<style type="text/css">
+      canvas { border: 1px solid black; }
+    </style>
+<body>
+
+<canvas id="canvas" width="150" height="150"></canvas>
+
+
+<script>
+var canvas = document.querySelector("#canvas");
+const ctx = canvas.getContext('2d');
+
+canvas.onload=draw();
+
+
+function draw(){
+	
+	if (canvas.getContext) {
+        ctx.strokeStyle="#888800";
+        ctx.strokeRect(10,10,10,100);
+	
+    
+        ctx.beginPath();
+	 	ctx.moveTo(30, 10);
+	 	ctx.lineTo(40, 10);
+	  	ctx.lineTo(40,100);
+        ctx.lineTo(50,100);
+        ctx.lineTo(50,10);
+        ctx.lineTo(60,10);
+        ctx.lineTo(60,110);
+        ctx.lineTo(30,110);
+        ctx.lineTo(30,10);
+        
+		
+	 		ctx.strokeStyle="red";
+  	        // ctx.fillStyle="grey";
+	  	// ctx.fill();
+	
+	 	ctx.stroke();
+		ctx.closePath();
+		
+	    ctx.beginPath();
+	    ctx.moveTo(70, 10);
+        ctx.lineTo(70, 20);
+        ctx.lineTo(80, 20);
+        ctx.lineTo(80, 110);
+        ctx.lineTo(90, 110);
+        ctx.lineTo(90, 20);
+        ctx.lineTo(100, 20);
+        ctx.lineTo(100, 10);
+        ctx.lineTo(70, 10);
+        
+	 	ctx.strokeStyle="green";
+	ctx.stroke()
+	ctx.closePath();
+		
+		
+		
+	}
+
+}
+
+</script>
+</body>
+</html>
