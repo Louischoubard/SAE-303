@@ -5,33 +5,35 @@
 <body>
 
 <canvas id="canvas" width="150" height="150"></canvas>
+<canvas id="canva2" width="150" height="150"></canvas>
 
 
 <script>
 var canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext('2d');
 
-canvas.onload=draw();
+// canvas.onload=draw();
 
+var canva2 = document.querySelector("#canva2");
+const ctx2 = canva2.getContext('2d');
+
+draw();
 
 function draw(){
-	
 	if (canvas.getContext) {
         ctx.strokeStyle="#888800";
-        ctx.strokeRect(10,10,10,100);
+        ctx.strokeRect(30,25,10,100);
 	
-    
         ctx.beginPath();
-	 	ctx.moveTo(30, 10);
-	 	ctx.lineTo(40, 10);
-	  	ctx.lineTo(40,100);
-        ctx.lineTo(50,100);
-        ctx.lineTo(50,10);
-        ctx.lineTo(60,10);
-        ctx.lineTo(60,110);
-        ctx.lineTo(30,110);
-        ctx.lineTo(30,10);
-        
+	 	ctx.moveTo(50, 25);
+	 	ctx.lineTo(60, 25);
+	  	ctx.lineTo(60,115);
+        ctx.lineTo(70,115);
+        ctx.lineTo(70,25);
+        ctx.lineTo(80,25);
+        ctx.lineTo(80,125);
+        ctx.lineTo(50,125);
+        ctx.lineTo(50,25);
 		
 	 		ctx.strokeStyle="red";
   	        // ctx.fillStyle="grey";
@@ -41,24 +43,48 @@ function draw(){
 		ctx.closePath();
 		
 	    ctx.beginPath();
-	    ctx.moveTo(70, 10);
-        ctx.lineTo(70, 20);
-        ctx.lineTo(80, 20);
-        ctx.lineTo(80, 110);
-        ctx.lineTo(90, 110);
-        ctx.lineTo(90, 20);
-        ctx.lineTo(100, 20);
-        ctx.lineTo(100, 10);
-        ctx.lineTo(70, 10);
+	    ctx.moveTo(90, 25);
+        ctx.lineTo(90, 35);
+        ctx.lineTo(100, 35);
+        ctx.lineTo(100, 125);
+        ctx.lineTo(110, 125);
+        ctx.lineTo(110, 35);
+        ctx.lineTo(120, 35);
+        ctx.lineTo(120, 25);
+        ctx.lineTo(90, 25);
         
 	 	ctx.strokeStyle="green";
 	ctx.stroke()
 	ctx.closePath();
-		
-		
-		
 	}
 
+    if (canva2.getContext) {
+        // plusieurs rectangles
+        ctx2.fillStyle="#888800";
+        ctx2.fillRect(30,25,10,100);
+	
+	 	ctx2.fillStyle="red";
+        ctx2.fillRect(50,25,10,100);
+        ctx2.fillRect(70,25,10,100);
+        ctx2.fillRect(60,115,10,10);
+        
+	 	ctx2.fillStyle="green";
+        ctx2.fillRect(90,25,30,10);
+        ctx2.fillRect(100,25,10,100);
+
+        // un rectangle effacé
+        ctx2.fillStyle="#888800";
+        ctx2.fillRect(30,25,10,100);
+	
+	 	ctx2.fillStyle="red";
+        ctx2.fillRect(50,25,30,100);
+        ctx2.clearRect(60,25,10,90);
+        
+	 	ctx2.fillStyle="green";
+        ctx2.fillRect(90,25,30,100);
+        ctx2.clearRect(90,35,10,90);
+        ctx2.clearRect(110,35,10,90);
+    }
 }
 
 </script>
