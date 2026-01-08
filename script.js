@@ -1,6 +1,8 @@
 const fileInput = document.getElementById('xls');
-const ctx = document.getElementById('myChart');
-var chartTSA = null
+const canvaChartTSA = document.getElementById('canvaChartTSA');
+const canvaChartDT = document.getElementById('canvaChartDT');
+var chartTSA = null;
+var chartDT = null;
 
 const ageSelect = document.getElementById('selectAge');
 const selectVisage = document.getElementById('selectVisage');
@@ -48,16 +50,58 @@ function changeParam(){
     return valueParam;
 }
 
-function exploiterDonnee(data){
-    var output = document.getElementById('result');
-    output.innerHTML ="";
+function getRecherche(valueParam, valueZone, valueVisage){
+    if(valueParam == "TTT"){
+        return valueParam + "_Visage" + valueVisage
+    }
+    if(valueZone == "E"){
+        return valueParam + valueZone + "_Visage" + valueVisage
+    }
+    if(valueParam == "Lat"){
+        return valueParam + "_" + valueZone + "_Visage" + valueVisage;
+    }
+    return valueParam.toUpperCase() + "_" + valueZone + "_Visage" + valueVisage;
+}
 
+function createChart(titre, cle, valeur, nameChart, canva){
+    if(nameChart !== null){
+        nameChart.destroy();
+    }
+    return new Chart(canva, {
+        type: 'line',
+        data: {
+            labels: cle,
+            datasets: [{
+                // label: valueParam + ' (s) sur ' + valueZone + ' pour l\'age',
+                label: "Test",
+                data: valeur,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: titre
+                }
+            }
+        }
+    });
+}
+
+function exploiterDonnee(data){
     var valueAge = changeAge();
     var valueVisage = changeVisage();
     var valueZone = changeZone();
     var valueParam = changeParam();
 
-    var recherche = valueParam.toUpperCase() + "_" + valueZone + "_Visage" + valueVisage;
+    var recherche = getRecherche(valueParam, valueZone, valueVisage);
+    console.log(recherche);
 
     var dataUpdate = data.filter((x, index) => index > 0 && x[1]>=valueAge[0] && x[1]<=valueAge[1]);
 
@@ -78,36 +122,25 @@ function exploiterDonnee(data){
 
     var valeurTSA = [];
     var ageTSA = [];
-    tabTSA.forEach(element => {
-        if(element[recherche] != 1000){
-            valeurTSA.push(element[recherche])
-            ageTSA.push(Math.round(element["Age (ans)"]*100)/100);
-        }
+    tabTSA.filter(e => e[recherche] != 1000)
+    .sort((a, b) => a["Age (ans)"] - b["Age (ans)"])
+    .forEach(e => {
+        ageTSA.push(Math.round(e["Age (ans)"] * 100) / 100);
+        valeurTSA.push(e[recherche]);
     });
 
+    chartTSA = createChart('TSA', ageTSA, valeurTSA, chartTSA, canvaChartTSA);
 
-    if(chartTSA !== null){
-        chartTSA.destroy();
-    }
-
-    chartTSA = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ageTSA,
-            datasets: [{
-                label: valueParam + ' (s) sur ' + valueZone + ' pour l\'age',
-                data: valeurTSA,
-                borderWidth: 1
-            }]
-        },
-        options: {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        }
-        }
+    var valeurDT = [];
+    var ageDT = [];
+    tabDT.filter(e => e[recherche] != 1000)
+    .sort((a, b) => a["Age (ans)"] - b["Age (ans)"])
+    .forEach(e => {
+        ageDT.push(Math.round(e["Age (ans)"] * 100) / 100);
+        valeurDT.push(e[recherche]);
     });
+
+    chartDT = createChart('DT', ageDT, valeurDT, chartDT, canvaChartDT);
 
     
     // for(i=1; i<nombreLigne; i++){
