@@ -1,8 +1,11 @@
 const fileInput = document.getElementById('xls');
+const ctx = document.getElementById('myChart');
+var chartTSA = null
+
 const ageSelect = document.getElementById('selectAge');
-const colAge = 1;
-var minAge = 1;
-var maxAge = 13;
+const selectVisage = document.getElementById('selectVisage');
+const selectZone = document.getElementById('selectZone');
+const selectParam = document.getElementById('selectParam');
 var data;
 fileInput.addEventListener('change', function(e) {
     // Quand le fichier change dans l'input
@@ -12,20 +15,100 @@ fileInput.addEventListener('change', function(e) {
 })
 
 ageSelect.addEventListener('change', () => {
-    var valueAge = ageSelect.value;
-    valueAge = valueAge.split("-");
-    minAge = valueAge[0];
-    maxAge = valueAge[1];
     exploiterDonnee(data);
 })
+selectVisage.addEventListener('change', () => {
+    exploiterDonnee(data);
+})
+selectZone.addEventListener('change', () => {
+    exploiterDonnee(data);
+})
+selectParam.addEventListener('change', () => {
+    exploiterDonnee(data);
+})
+
+function changeAge(){
+    var valueAge = ageSelect.value;
+    valueAge = valueAge.split("-");
+    return valueAge;
+}
+
+function changeVisage(){
+    var valueVisage = selectVisage.value;
+    return valueVisage;
+}
+
+function changeZone(){
+    var valueZone = selectZone.value;
+    return valueZone;
+}
+
+function changeParam(){
+    var valueParam = selectParam.value;
+    return valueParam;
+}
 
 function exploiterDonnee(data){
     var output = document.getElementById('result');
     output.innerHTML ="";
-    nombreLigne = data.length
 
-    var tabTSA = data.filter((x) => x[3]=="TSA");
-    console.log(tabTSA[10]);
+    var valueAge = changeAge();
+    var valueVisage = changeVisage();
+    var valueZone = changeZone();
+    var valueParam = changeParam();
+
+    var recherche = valueParam.toUpperCase() + "_" + valueZone + "_Visage" + valueVisage;
+
+    var dataUpdate = data.filter((x, index) => index > 0 && x[1]>=valueAge[0] && x[1]<=valueAge[1]);
+
+    var entetes = data[1];
+
+    var indexRecherche = entetes.indexOf(recherche);
+    console.log(indexRecherche, recherche)
+
+    var resultat = dataUpdate.map(ligne => ({
+        "Sujet": ligne[0],
+        "Age (ans)": ligne[1],
+        "Case": ligne[3],
+        [recherche]: ligne[indexRecherche]
+    }));
+
+    var tabTSA = resultat.filter((x) => x["Case"]=="TSA");
+    var tabDT = resultat.filter((x) => x["Case"]=="DT");
+
+    var valeurTSA = [];
+    var ageTSA = [];
+    tabTSA.forEach(element => {
+        if(element[recherche] != 1000){
+            valeurTSA.push(element[recherche])
+            ageTSA.push(Math.round(element["Age (ans)"]*100)/100);
+        }
+    });
+
+
+    if(chartTSA !== null){
+        chartTSA.destroy();
+    }
+
+    chartTSA = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ageTSA,
+            datasets: [{
+                label: valueParam + ' (s) sur ' + valueZone + ' pour l\'age',
+                data: valeurTSA,
+                borderWidth: 1
+            }]
+        },
+        options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+        }
+    });
+
     
     // for(i=1; i<nombreLigne; i++){
     //     var tr = document.createElement('tr');
@@ -66,8 +149,7 @@ function lireFichier(file){
         
         // récupération de la première feuille du classeur
         var firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        
-        // header: 1 instructs xlsx to create an 'array of arrays'
+
         result = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
         
         // data preview

@@ -17,15 +17,41 @@
     <form action="#">
         <select name="selectAge" id="selectAge">
             <option value="2-7">2-7</option>
-            <option value="7-13">7-13</option>
-            <option value="2-13">Tout</option>
+            <option value="7-14">7-13</option>
+            <option value="2-14">Tout</option>
         </select>
+        <select name="selectVisage" id="selectVisage">
+            <option value="1">Visage 1</option>
+            <option value="2">Visage 2</option>
+            <option value="3">Visage 3</option>
+            <option value="4">Visage 4</option>
+        </select>
+        <select name="selectZone" id="selectZone">
+            <option value="E">Ecran</option>
+            <option value="Tete">Tête</option>
+            <option value="Yeux">Yeux</option>
+            <option value="Bouche">Bouche</option>
+        </select>
+        <select name="selectParam" id="selectParam">
+            <option value="TTT">Temps total tracké</option>
+            <option value="TP">Temps passé</option>
+            <option value="TF">Temps fixation</option>
+            <option value="NbF">Nombre de fixation</option>
+            <option value="NBEZ">Nombre d'entrée dans Zone</option>
+            <option value="Lat">Latence</option>
+        </select>
+
     </form>
 
     <table id="result">
 
     </table>
 
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.19.1/package/dist/xlsx.full.min.js"></script>
     <script src="script.js"></script>
 </body>
